@@ -18,7 +18,6 @@
       </div>
       <button class="btn btn-icon btn-outline notification-btn">
         <span class="material-icons-outlined">notifications</span>
-        <span class="badge">3</span>
       </button>
       <div class="user-profile flex items-center gap-8" (click)="!isLoggedIn ? openLoginModal() : null">
         <ng-container *ngIf="isLoggedIn; else notLoggedIn">
@@ -66,59 +65,13 @@
                 </div>
                 <span class="material-icons-outlined chevron">chevron_right</span>
               </li>
-              <li class="link-item">
-                <div class="icon-box" style="color: #f59e0b; background: #fef3c7;"><span
-                    class="material-icons-outlined">policy</span></div>
-                <div class="link-text">
-                  <h4>Company Policies</h4>
-                  <p>View company policies</p>
-                </div>
-                <span class="material-icons-outlined chevron">chevron_right</span>
-              </li>
-              <li class="link-item">
-                <div class="icon-box" style="color: #8b5cf6; background: #ede9fe;"><span
-                    class="material-icons-outlined">support_agent</span></div>
-                <div class="link-text">
-                  <h4>IT Support</h4>
-                  <p>Get help & raise a ticket</p>
-                </div>
-                <span class="material-icons-outlined chevron">chevron_right</span>
-              </li>
+
             </ul>
             <button class="btn-view-all w-100 mt-16">View All Resources</button>
           </div>
         </div>
 
-        <!-- News & Announcements -->
-        <div class="card">
-          <div class="card-header flex items-center justify-between">
-            <h3>News & Announcements</h3>
-            <a href="#" class="view-all-link">View All</a>
-          </div>
-          <div class="card-body">
-            <div class="news-item flex gap-16 mb-16">
-              <div class="news-img-placeholder" style="background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);">
-                <span class="material-icons-outlined" style="color: #94a3b8;">newspaper</span>
-              </div>
-              <div class="news-content">
-                <h4 class="text-ellipsis">Annual Day Celebration</h4>
-                <p class="text-ellipsis-2">Join us for the Annual Day celebration on Dec 15, 2024.</p>
-                <span class="news-time">2h ago</span>
-              </div>
-            </div>
-            <div class="news-item flex gap-16">
-              <div class="news-img-placeholder" style="background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);">
-                <span class="material-icons-outlined" style="color: #94a3b8;">article</span>
-              </div>
-              <div class="news-content">
-                <h4 class="text-ellipsis">Work From Home Guidelines</h4>
-                <p class="text-ellipsis-2">New WFH policy is now effective from Nov 1, 2024.</p>
-                <span class="news-time">1d ago</span>
-              </div>
-            </div>
-            <button class="btn-view-all w-100 mt-16">View All News</button>
-          </div>
-        </div>
+
 
       </div>
 
@@ -199,7 +152,7 @@
       <div class="column right-col">
 
         <!-- Actions -->
-        <div class="card">
+        <div class="card mb-24">
           <div class="card-header">
             <h3>Actions</h3>
           </div>
@@ -212,6 +165,37 @@
               </div>
               <span class="material-icons-outlined chevron">chevron_right</span>
             </div>
+          </div>
+        </div>
+
+        <!-- News & Announcements -->
+        <div class="card">
+          <div class="card-header flex items-center justify-between">
+            <h3>News & Announcements</h3>
+            <a href="#" class="view-all-link">View All</a>
+          </div>
+          <div class="card-body">
+            <div class="news-item flex gap-16 mb-16">
+              <div class="news-img-placeholder" style="background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);">
+                <span class="material-icons-outlined" style="color: #94a3b8;">newspaper</span>
+              </div>
+              <div class="news-content">
+                <h4 class="text-ellipsis">Annual Day Celebration</h4>
+                <p class="text-ellipsis-2">Join us for the Annual Day celebration on Dec 15, 2024.</p>
+                <span class="news-time">2h ago</span>
+              </div>
+            </div>
+            <div class="news-item flex gap-16">
+              <div class="news-img-placeholder" style="background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);">
+                <span class="material-icons-outlined" style="color: #94a3b8;">article</span>
+              </div>
+              <div class="news-content">
+                <h4 class="text-ellipsis">Work From Home Guidelines</h4>
+                <p class="text-ellipsis-2">New WFH policy is now effective from Nov 1, 2024.</p>
+                <span class="news-time">1d ago</span>
+              </div>
+            </div>
+            <button class="btn-view-all w-100 mt-16">View All News</button>
           </div>
         </div>
 
@@ -235,8 +219,11 @@
     </button>
 
     <div class="login-header">
-      <h2 style="margin: 0; font-weight: 700; color: #1e293b;">Sign In</h2>
-      <p class="text-muted" style="margin-top: 8px;">Access the ADNATE ecosystem</p>
+      <div class="login-icon-wrapper">
+        <span class="material-icons-outlined">account_circle</span>
+      </div>
+      <h2 style="margin: 0; font-weight: 800; color: #1e293b; font-size: 1.8rem;">Welcome Back</h2>
+      <p class="text-muted" style="margin-top: 8px; font-size: 0.95rem;">Sign in to access your dashboard</p>
     </div>
 
     <div *ngIf="loginErrorMessage" class="alert-error">
@@ -244,32 +231,24 @@
     </div>
 
     <form class="login-form" (submit)="handleLogin($event)">
-      <div class="form-group mb-16">
+      <div class="form-group mb-24">
+        <label for="username" class="form-label">Email or Username</label>
         <div class="input-with-icon">
           <span class="material-icons-outlined">person_outline</span>
-          <input type="text" id="username" name="username" [(ngModel)]="loginUsername" placeholder="Email or Username"
-            required>
+          <input type="text" id="username" name="username" [(ngModel)]="loginUsername" placeholder="Enter your email" required>
         </div>
       </div>
 
-      <div class="form-group mb-16">
+      <div class="form-group mb-32">
+        <label for="password" class="form-label">Password</label>
         <div class="input-with-icon">
           <span class="material-icons-outlined">lock_outline</span>
-          <input type="password" id="password" name="password" [(ngModel)]="loginPassword" placeholder="Password"
-            required>
+          <input type="password" id="password" name="password" [(ngModel)]="loginPassword" placeholder="Enter your password" required>
         </div>
       </div>
 
-      <div class="flex items-center justify-between mb-24" style="font-size: 13px;">
-        <label class="flex items-center gap-8" style="cursor: pointer; color: #64748b;">
-          <input type="checkbox" style="margin: 0;"> Remember me
-        </label>
-        <a href="#" class="text-primary" style="text-decoration: none;">Forgot password?</a>
-      </div>
-
-      <button type="submit" class="btn btn-primary w-100"
-        style="padding: 10px; font-weight: 600; justify-content: center;">
-        Sign In
+      <button type="submit" class="btn btn-primary w-100 btn-login" style="justify-content: center;">
+        Sign In <span class="material-icons-outlined" style="font-size: 18px; margin-left: 8px;">arrow_forward</span>
       </button>
     </form>
   </div>
