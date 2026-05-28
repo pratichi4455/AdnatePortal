@@ -204,7 +204,7 @@
             <h3>Actions</h3>
           </div>
           <div class="card-body">
-            <div class="action-btn-item flex items-center gap-16">
+            <div class="action-btn-item flex items-center gap-16" (click)="toggleChat()" style="cursor: pointer;">
               <div class="action-icon"><span class="material-icons-outlined">emoji_objects</span></div>
               <div class="action-text flex-1">
                 <h4>Ask HR</h4>
@@ -273,4 +273,64 @@
       </button>
     </form>
   </div>
+</div>
+
+<!-- AI Chatbot Drawer -->
+<div class="chatbot-drawer" [class.open]="isChatOpen">
+  <div class="chatbot-header">
+    <div class="flex items-center gap-12">
+      <div class="chatbot-avatar">
+        <span class="material-icons-outlined">psychology</span>
+      </div>
+      <div>
+        <h3 class="chatbot-title">Ask HR AI</h3>
+        <span class="chatbot-subtitle">Powered by Gemini 2.5 Flash</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-8">
+      <button class="btn btn-icon btn-header-reset" (click)="resetChatHistory()" title="Reset Conversation">
+        <span class="material-icons-outlined">refresh</span>
+      </button>
+      <button class="btn btn-icon btn-header-close" (click)="toggleChat()">
+        <span class="material-icons-outlined">close</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="chatbot-body" id="chat-body-scroll">
+    <div class="chat-messages-list">
+      <div *ngFor="let msg of chatMessages" class="chat-bubble-wrapper" [class.user-msg]="msg.sender === 'user'">
+        <div class="chat-bubble">
+          <p class="chat-text">{{ msg.text }}</p>
+          <span class="chat-time">{{ msg.timestamp | date:'shortTime' }}</span>
+        </div>
+      </div>
+      
+      <!-- AI Typing Indicator -->
+      <div *ngIf="isAiLoading" class="chat-bubble-wrapper">
+        <div class="chat-bubble loading-bubble">
+          <div class="typing-indicator">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <form class="chatbot-footer" (submit)="sendChatMessage(); $event.preventDefault()">
+    <input 
+      type="text" 
+      class="form-control chat-input" 
+      [(ngModel)]="userMessage" 
+      name="chatInput"
+      placeholder="Type your HR question here..."
+      [disabled]="isAiLoading"
+      autocomplete="off"
+    >
+    <button type="submit" class="btn btn-send" [disabled]="!userMessage.trim() || isAiLoading">
+      <span class="material-icons-outlined">send</span>
+    </button>
+  </form>
 </div>
