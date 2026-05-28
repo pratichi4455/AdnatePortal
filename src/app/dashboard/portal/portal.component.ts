@@ -20,50 +20,7 @@ export class PortalComponent implements OnInit {
   isLoggedIn: boolean = false;
   loginErrorMessage: string = '';
 
-  applications: AppItem[] = [
-    {
-      id: 'asset-manager',
-      name: 'Asset Manager',
-      icon: 'inventory_2',
-      url: 'http://localhost:4200/asset-manager',
-      color: '#3b82f6'
-    },
-    {
-      id: 'hr-portal',
-      name: 'HR Portal',
-      icon: 'groups',
-      url: 'http://localhost:4200/hr',
-      color: '#10b981'
-    },
-    {
-      id: 'helpdesk',
-      name: 'IT Helpdesk',
-      icon: 'support_agent',
-      url: 'http://localhost:4200/helpdesk',
-      color: '#f59e0b'
-    },
-    {
-      id: 'finance',
-      name: 'Finance & Payroll',
-      icon: 'payments',
-      url: 'http://localhost:4200/finance',
-      color: '#8b5cf6'
-    },
-    {
-      id: 'learning',
-      name: 'Learning Hub',
-      icon: 'school',
-      url: 'http://localhost:4200/learning',
-      color: '#ef4444'
-    },
-    {
-      id: 'directory',
-      name: 'Company Directory',
-      icon: 'contact_phone',
-      url: 'http://localhost:4200/directory',
-      color: '#06b6d4'
-    }
-  ];
+  holidays: any[] = []; // Intentionally left empty to handle the "if not any then handle it in proper way" condition
 
   ngOnInit(): void {
     // Show login modal on fresh load
@@ -83,13 +40,10 @@ export class PortalComponent implements OnInit {
 
   handleLogin(event: Event): void {
     event.preventDefault();
-    // Placeholder login logic
     console.log('Logging in with', this.loginUsername);
     this.isLoggedIn = true;
     this.loginErrorMessage = '';
-    // Close modal on successful login
     this.closeLoginModal();
-    // Optionally reset fields
     this.loginUsername = '';
     this.loginPassword = '';
   }
@@ -100,8 +54,6 @@ export class PortalComponent implements OnInit {
       this.openLoginModal();
       return;
     }
-    // For a real SSO scenario, this might open a new tab or redirect
-    // window.location.href = url;
     window.open(url, '_blank');
   }
 }
