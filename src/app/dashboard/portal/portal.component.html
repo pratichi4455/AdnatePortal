@@ -1,0 +1,276 @@
+<div class="portal-layout">
+  <!-- Header / Navigation -->
+  <header class="portal-header flex items-center justify-between">
+    <div class="logo-area flex items-center gap-32">
+      <div class="logo flex items-center gap-8">
+        <span class="material-icons-outlined" style="font-size: 32px; color: white;">business</span>
+        <div class="logo-text" style="display: flex; flex-direction: column;">
+          <h2 style="color: white; margin: 0; font-weight: 800; font-size: 1.2rem; line-height: 1;">ADNATE</h2>
+          <span style="color: #cbd5e1; font-size: 0.65rem; font-weight: 500; letter-spacing: 0.5px;">IT Solutions</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="user-actions flex items-center gap-16">
+      <div class="search-bar">
+        <span class="material-icons-outlined search-icon">search</span>
+        <input type="text" class="form-control" placeholder="Search apps, tools, documents...">
+      </div>
+      <button class="btn btn-icon btn-outline notification-btn">
+        <span class="material-icons-outlined">notifications</span>
+        <span class="badge">3</span>
+      </button>
+      <div class="user-profile flex items-center gap-8" (click)="!isLoggedIn ? openLoginModal() : null">
+        <ng-container *ngIf="isLoggedIn; else notLoggedIn">
+          <img src="https://ui-avatars.com/api/?name=Emma+Reynolds&background=random" alt="User" class="avatar-img">
+          <span class="user-name">Hi, Emma <span class="material-icons-outlined"
+              style="font-size: 16px;">expand_more</span></span>
+        </ng-container>
+        <ng-template #notLoggedIn>
+          <span class="material-icons-outlined" style="font-size: 32px; color: white;">account_circle</span>
+        </ng-template>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="portal-content">
+
+    <div class="dashboard-grid">
+
+      <!-- Left Column -->
+      <div class="column left-col">
+
+        <!-- Quick Links -->
+        <div class="card mb-24">
+          <div class="card-header">
+            <h3>Quick Links</h3>
+          </div>
+          <div class="card-body">
+            <ul class="link-list">
+              <li class="link-item">
+                <div class="icon-box" style="color: #4f46e5; background: #e0e7ff;"><span
+                    class="material-icons-outlined">inventory_2</span></div>
+                <div class="link-text">
+                  <h4>Asset Management System</h4>
+                  <p>Manage company assets</p>
+                </div>
+                <span class="material-icons-outlined chevron">chevron_right</span>
+              </li>
+              <li class="link-item">
+                <div class="icon-box" style="color: #10b981; background: #d1fae5;"><span
+                    class="material-icons-outlined">people_alt</span></div>
+                <div class="link-text">
+                  <h4>Recruitment Management System</h4>
+                  <p>Manage hiring & recruitment</p>
+                </div>
+                <span class="material-icons-outlined chevron">chevron_right</span>
+              </li>
+              <li class="link-item">
+                <div class="icon-box" style="color: #f59e0b; background: #fef3c7;"><span
+                    class="material-icons-outlined">policy</span></div>
+                <div class="link-text">
+                  <h4>Company Policies</h4>
+                  <p>View company policies</p>
+                </div>
+                <span class="material-icons-outlined chevron">chevron_right</span>
+              </li>
+              <li class="link-item">
+                <div class="icon-box" style="color: #8b5cf6; background: #ede9fe;"><span
+                    class="material-icons-outlined">support_agent</span></div>
+                <div class="link-text">
+                  <h4>IT Support</h4>
+                  <p>Get help & raise a ticket</p>
+                </div>
+                <span class="material-icons-outlined chevron">chevron_right</span>
+              </li>
+            </ul>
+            <button class="btn-view-all w-100 mt-16">View All Resources</button>
+          </div>
+        </div>
+
+        <!-- News & Announcements -->
+        <div class="card">
+          <div class="card-header flex items-center justify-between">
+            <h3>News & Announcements</h3>
+            <a href="#" class="view-all-link">View All</a>
+          </div>
+          <div class="card-body">
+            <div class="news-item flex gap-16 mb-16">
+              <div class="news-img-placeholder" style="background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);">
+                <span class="material-icons-outlined" style="color: #94a3b8;">newspaper</span>
+              </div>
+              <div class="news-content">
+                <h4 class="text-ellipsis">Annual Day Celebration</h4>
+                <p class="text-ellipsis-2">Join us for the Annual Day celebration on Dec 15, 2024.</p>
+                <span class="news-time">2h ago</span>
+              </div>
+            </div>
+            <div class="news-item flex gap-16">
+              <div class="news-img-placeholder" style="background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);">
+                <span class="material-icons-outlined" style="color: #94a3b8;">article</span>
+              </div>
+              <div class="news-content">
+                <h4 class="text-ellipsis">Work From Home Guidelines</h4>
+                <p class="text-ellipsis-2">New WFH policy is now effective from Nov 1, 2024.</p>
+                <span class="news-time">1d ago</span>
+              </div>
+            </div>
+            <button class="btn-view-all w-100 mt-16">View All News</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Middle Column -->
+      <div class="column middle-col">
+
+        <!-- Image Banner -->
+        <div class="banner-card mb-24">
+          <div class="banner-content">
+            <h2>Welcome to ADNATE IT Solutions</h2>
+            <p>Empowering people. Driving innovation.</p>
+          </div>
+        </div>
+
+        <!-- What's Happening -->
+        <div class="card mb-24">
+          <div class="card-header flex items-center justify-between">
+            <h3>What's Happening</h3>
+            <a href="#" class="view-all-link">View All</a>
+          </div>
+          <div class="card-body">
+            <div class="happening-item flex items-center gap-16 mb-16">
+              <img src="https://ui-avatars.com/api/?name=Emma+Reynolds&background=random" class="avatar-img-sm"
+                alt="Emma">
+              <div class="happening-content flex-1">
+                <h4>Upcoming Birthdays</h4>
+                <p>Emma Reynolds (Nov 15), Jake Johnson (Nov 28)</p>
+              </div>
+              <span class="news-time">Within 1 month</span>
+            </div>
+
+            <div class="happening-item flex items-center gap-16">
+              <img src="https://ui-avatars.com/api/?name=Michael+Wilson&background=random" class="avatar-img-sm"
+                alt="Michael">
+              <div class="happening-content flex-1">
+                <h4>Work Anniversaries</h4>
+                <p>Michael Wilson (5 Years on Nov 20)</p>
+              </div>
+              <span class="news-time">Within 1 month</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming Events -->
+        <div class="card">
+          <div class="card-header flex items-center justify-between">
+            <h3>Upcoming Events</h3>
+            <a href="#" class="view-all-link">View Calendar</a>
+          </div>
+          <div class="card-body" style="min-height: 180px;">
+            <div *ngIf="holidays && holidays.length > 0; else noHolidays">
+              <div class="event-item flex items-center gap-16 mb-16" *ngFor="let holiday of holidays">
+                <div class="event-date text-center">
+                  <div class="month">{{ holiday.month }}</div>
+                  <div class="day">{{ holiday.day }}</div>
+                </div>
+                <div class="event-details flex-1">
+                  <h4>{{ holiday.name }}</h4>
+                  <p>{{ holiday.type }}</p>
+                </div>
+              </div>
+            </div>
+            <ng-template #noHolidays>
+              <div class="empty-state text-center flex flex-col items-center justify-center">
+                <div class="icon-circle mb-16">
+                  <span class="material-icons-outlined">event_busy</span>
+                </div>
+                <h4>No Upcoming Holidays</h4>
+                <p>There are no holidays scheduled in the near future.</p>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column -->
+      <div class="column right-col">
+
+        <!-- Actions -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Actions</h3>
+          </div>
+          <div class="card-body">
+            <div class="action-btn-item flex items-center gap-16">
+              <div class="action-icon"><span class="material-icons-outlined">emoji_objects</span></div>
+              <div class="action-text flex-1">
+                <h4>Ask HR</h4>
+                <p>Get answers to HR queries</p>
+              </div>
+              <span class="material-icons-outlined chevron">chevron_right</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer class="portal-footer text-center">
+    © 2024 ADNATE IT Solutions. All rights reserved. &nbsp;&nbsp;|&nbsp;&nbsp; <a href="#">Privacy Policy</a>
+    &nbsp;&nbsp;|&nbsp;&nbsp; <a href="#">Terms of Use</a>
+  </footer>
+</div>
+
+<!-- Login Modal -->
+<div class="login-modal-overlay" *ngIf="showLoginModal" (click)="closeLoginModal()">
+  <div class="login-modal-content" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="closeLoginModal()">
+      <span class="material-icons-outlined">close</span>
+    </button>
+
+    <div class="login-header">
+      <h2 style="margin: 0; font-weight: 700; color: #1e293b;">Sign In</h2>
+      <p class="text-muted" style="margin-top: 8px;">Access the ADNATE ecosystem</p>
+    </div>
+
+    <div *ngIf="loginErrorMessage" class="alert-error">
+      {{ loginErrorMessage }}
+    </div>
+
+    <form class="login-form" (submit)="handleLogin($event)">
+      <div class="form-group mb-16">
+        <div class="input-with-icon">
+          <span class="material-icons-outlined">person_outline</span>
+          <input type="text" id="username" name="username" [(ngModel)]="loginUsername" placeholder="Email or Username"
+            required>
+        </div>
+      </div>
+
+      <div class="form-group mb-16">
+        <div class="input-with-icon">
+          <span class="material-icons-outlined">lock_outline</span>
+          <input type="password" id="password" name="password" [(ngModel)]="loginPassword" placeholder="Password"
+            required>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between mb-24" style="font-size: 13px;">
+        <label class="flex items-center gap-8" style="cursor: pointer; color: #64748b;">
+          <input type="checkbox" style="margin: 0;"> Remember me
+        </label>
+        <a href="#" class="text-primary" style="text-decoration: none;">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100"
+        style="padding: 10px; font-weight: 600; justify-content: center;">
+        Sign In
+      </button>
+    </form>
+  </div>
+</div>
