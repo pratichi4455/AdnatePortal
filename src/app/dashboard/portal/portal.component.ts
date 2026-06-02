@@ -22,6 +22,22 @@ export class PortalComponent implements OnInit {
   loginErrorMessage: string = '';
 
   holidays: any[] = []; // Intentionally left empty to handle the "if not any then handle it in proper way" condition
+  quickLinks: any[] = [
+    {
+      name: 'Asset Management System',
+      description: 'Manage company assets',
+      icon: 'inventory_2',
+      color: '#4f46e5',
+      bgColor: '#e0e7ff'
+    },
+    {
+      name: 'Recruitment Management System',
+      description: 'Manage hiring & recruitment',
+      icon: 'people_alt',
+      color: '#10b981',
+      bgColor: '#d1fae5'
+    }
+  ];
 
   // Chatbot State
   isChatOpen: boolean = false;

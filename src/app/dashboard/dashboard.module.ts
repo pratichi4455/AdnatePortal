@@ -1,18 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // Add FormsModule for ngModel
+import { FormsModule } from '@angular/forms';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { PortalComponent } from './portal/portal.component';
+import { AdminComponent } from './admin/admin.component';
+
+
 
 
 @NgModule({
   declarations: [
-    PortalComponent
+    PortalComponent,
+    AdminComponent
   ],
   imports: [
     CommonModule,
-    FormsModule, // Add it here
+    FormsModule,
     DashboardRoutingModule
   ]
 })
