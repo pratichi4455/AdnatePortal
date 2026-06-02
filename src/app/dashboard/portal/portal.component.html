@@ -12,10 +12,7 @@
     </div>
 
     <div class="user-actions flex items-center gap-16">
-      <div class="search-bar">
-        <span class="material-icons-outlined search-icon">search</span>
-        <input type="text" class="form-control" placeholder="Search apps, tools, documents...">
-      </div>
+
       <button class="btn btn-icon btn-outline notification-btn">
         <span class="material-icons-outlined">notifications</span>
       </button>
@@ -47,31 +44,20 @@
           </div>
           <div class="card-body">
             <ul class="link-list">
-              <li class="link-item">
-                <div class="icon-box" style="color: #4f46e5; background: #e0e7ff;"><span
-                    class="material-icons-outlined">inventory_2</span></div>
+              <li class="link-item" *ngFor="let link of quickLinks">
+                <div class="icon-box" [style.color]="link.color" [style.background]="link.bgColor">
+                  <span class="material-icons-outlined">{{ link.icon }}</span>
+                </div>
                 <div class="link-text">
-                  <h4>Asset Management System</h4>
-                  <p>Manage company assets</p>
+                  <h4>{{ link.name }}</h4>
+                  <p>{{ link.description }}</p>
                 </div>
                 <span class="material-icons-outlined chevron">chevron_right</span>
               </li>
-              <li class="link-item">
-                <div class="icon-box" style="color: #10b981; background: #d1fae5;"><span
-                    class="material-icons-outlined">people_alt</span></div>
-                <div class="link-text">
-                  <h4>Recruitment Management System</h4>
-                  <p>Manage hiring & recruitment</p>
-                </div>
-                <span class="material-icons-outlined chevron">chevron_right</span>
-              </li>
-
             </ul>
-            <button class="btn-view-all w-100 mt-16">View All Resources</button>
+            <button class="btn-view-all w-100 mt-16" *ngIf="quickLinks.length > 2">View All Resources</button>
           </div>
         </div>
-
-
 
       </div>
 
@@ -79,70 +65,10 @@
       <div class="column middle-col">
 
         <!-- Image Banner -->
-        <div class="banner-card mb-24">
+        <div class="banner-card banner-match-height">
           <div class="banner-content">
             <h2>Welcome to ADNATE IT Solutions</h2>
             <p>Empowering people. Driving innovation.</p>
-          </div>
-        </div>
-
-        <!-- What's Happening -->
-        <div class="card mb-24">
-          <div class="card-header flex items-center justify-between">
-            <h3>What's Happening</h3>
-            <a href="#" class="view-all-link">View All</a>
-          </div>
-          <div class="card-body">
-            <div class="happening-item flex items-center gap-16 mb-16">
-              <img src="https://ui-avatars.com/api/?name=Emma+Reynolds&background=random" class="avatar-img-sm"
-                alt="Emma">
-              <div class="happening-content flex-1">
-                <h4>Upcoming Birthdays</h4>
-                <p>Emma Reynolds (Nov 15), Jake Johnson (Nov 28)</p>
-              </div>
-              <span class="news-time">Within 1 month</span>
-            </div>
-
-            <div class="happening-item flex items-center gap-16">
-              <img src="https://ui-avatars.com/api/?name=Michael+Wilson&background=random" class="avatar-img-sm"
-                alt="Michael">
-              <div class="happening-content flex-1">
-                <h4>Work Anniversaries</h4>
-                <p>Michael Wilson (5 Years on Nov 20)</p>
-              </div>
-              <span class="news-time">Within 1 month</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Upcoming Events -->
-        <div class="card">
-          <div class="card-header flex items-center justify-between">
-            <h3>Upcoming Events</h3>
-            <a href="#" class="view-all-link">View Calendar</a>
-          </div>
-          <div class="card-body" style="min-height: 180px;">
-            <div *ngIf="holidays && holidays.length > 0; else noHolidays">
-              <div class="event-item flex items-center gap-16 mb-16" *ngFor="let holiday of holidays">
-                <div class="event-date text-center">
-                  <div class="month">{{ holiday.month }}</div>
-                  <div class="day">{{ holiday.day }}</div>
-                </div>
-                <div class="event-details flex-1">
-                  <h4>{{ holiday.name }}</h4>
-                  <p>{{ holiday.type }}</p>
-                </div>
-              </div>
-            </div>
-            <ng-template #noHolidays>
-              <div class="empty-state text-center flex flex-col items-center justify-center">
-                <div class="icon-circle mb-16">
-                  <span class="material-icons-outlined">event_busy</span>
-                </div>
-                <h4>No Upcoming Holidays</h4>
-                <p>There are no holidays scheduled in the near future.</p>
-              </div>
-            </ng-template>
           </div>
         </div>
 
@@ -201,7 +127,59 @@
 
       </div>
 
+      <!-- Solutions Section -->
+      <div class="solutions-section">
+        <div class="solutions-header text-center mb-24">
+          <span class="we-offer">// WE OFFER</span>
+          <h2>Solutions</h2>
+        </div>
+        
+        <div class="solutions-grid">
+          <div class="solution-card">
+            <div class="card-bg-number">01</div>
+            <div class="solution-content">
+              <h3>Banking &<br>Finance</h3>
+              <p>Optimize financial processes, enhance security, and drive digital transformation seamlessly.</p>
+            </div>
+          </div>
+          
+          <div class="solution-card">
+            <div class="card-bg-number">02</div>
+            <div class="solution-content">
+              <h3>Manufacturing</h3>
+              <p>Empower manufacturing efficiency with digital solutions, streamlining operations and advancing production in real-time.</p>
+            </div>
+          </div>
+          
+          <div class="solution-card">
+            <div class="card-bg-number">03</div>
+            <div class="solution-content">
+              <h3>Automobile</h3>
+              <p>Drive excellence with tailored IT solutions, boosting productivity, quality, and agility across the production lifecycle.</p>
+            </div>
+          </div>
+          
+          <div class="solution-card">
+            <div class="card-bg-number">04</div>
+            <div class="solution-content">
+              <h3>Insurance</h3>
+              <p>Enhance insurance operations with tailored IT solutions, enhancing customer experiences, mitigating risks, and optimizing processes efficiently.</p>
+            </div>
+          </div>
+          
+          <div class="solution-card">
+            <div class="card-bg-number">05</div>
+            <div class="solution-content">
+              <h3>Horizontals</h3>
+              <p>Versatile digital solutions to streamline operations, ensure adaptability and efficiency across diverse industries and business functions.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
+
+
 
   </main>
 
