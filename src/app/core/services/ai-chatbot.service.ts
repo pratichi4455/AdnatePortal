@@ -15,7 +15,7 @@ export class AiChatbotService {
   private chatSession: any;
   
   // Storing the provided Gemini API key
-  private apiKey: string = 'AIzaSyBmVWAhlUZ2grWehWVpEQYZaxH0OzJ_XBc';
+  private apiKey: string = 'AIzaSyA4qIWapyqF4039YiW43--KMj0_FHZmk40';
 
   constructor() {
     this.initSDK();
@@ -42,7 +42,7 @@ export class AiChatbotService {
         Your tone is friendly, professional, helpful, and concise.
         You help employees with HR-related topics including:
         - Leave Policies (Casual Leave, Sick Leave, Maternity/Paternity Leave, Earned Leave)
-        - Company holidays and timings (9 AM - 6 PM, Monday to Friday)
+        - Company holidays and timings (9:30 AM - 6:30 PM, Monday to Friday)
         - Dress code, workplace policies, benefits, and workplace guidelines.
         - General HR contact information and common workflow help.
         
