@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { AiChatbotService, ChatMessage } from '../../core/services/ai-chatbot.service';
+import { HeroService } from '../../core/services/hero.service';
 
 interface AppItem {
   id: string;
@@ -20,24 +21,17 @@ export class PortalComponent implements OnInit {
   loginPassword: string = '';
   isLoggedIn: boolean = false;
   loginErrorMessage: string = '';
+  loggedInUser: string = '';
+  isProfileDropdownOpen: boolean = false;
+
+  // Logged In User details
+  userRoleId: string = '';
+  userRoleName: string = '';
+  userDisplayName: string = '';
+  userEmail: string = '';
 
   holidays: any[] = []; // Intentionally left empty to handle the "if not any then handle it in proper way" condition
-  quickLinks: any[] = [
-    {
-      name: 'Asset Management System',
-      description: 'Manage company assets',
-      icon: 'inventory_2',
-      color: '#4f46e5',
-      bgColor: '#e0e7ff'
-    },
-    {
-      name: 'Recruitment Management System',
-      description: 'Manage hiring & recruitment',
-      icon: 'people_alt',
-      color: '#10b981',
-      bgColor: '#d1fae5'
-    }
-  ];
+  quickLinks: any[] = [];
 
   // Chatbot State
   isChatOpen: boolean = false;
@@ -45,7 +39,10 @@ export class PortalComponent implements OnInit {
   userMessage: string = '';
   isAiLoading: boolean = false;
 
-  constructor(private aiChatbotService: AiChatbotService) {}
+  constructor(
+    private aiChatbotService: AiChatbotService,
+    private heroService: HeroService
+  ) {}
 
   ngOnInit(): void {
     // Show login modal on fresh load
@@ -53,6 +50,7 @@ export class PortalComponent implements OnInit {
       this.showLoginModal = true;
     }, 300);
     this.initializeChat();
+    this.fetchQuickLinks();
   }
 
   initializeChat(): void {
@@ -77,11 +75,51 @@ export class PortalComponent implements OnInit {
   handleLogin(event: Event): void {
     event.preventDefault();
     console.log('Logging in with', this.loginUsername);
-    this.isLoggedIn = true;
-    this.loginErrorMessage = '';
-    this.closeLoginModal();
-    this.loginUsername = '';
-    this.loginPassword = '';
+
+    this.heroService.setCredentials(this.loginUsername, this.loginPassword);
+
+    this.heroService.ajax(
+      'GetLoggedInUserRole',
+      'http://schemas.cordys.com/AW_Database_Metadata',
+      {
+        preserveSpace: 'no',
+        qAccess: '0',
+        qValues: '',
+        email: this.loginUsername,
+        password: this.loginPassword
+      }
+    ).then((resp: any) => {
+      console.log('Login response:', resp);
+      const user = this.heroService.xmltojson(resp, 'm_users');
+      console.log('Parsed user JSON:', user);
+
+      if (user && user.name) {
+        // Successful login
+        this.loggedInUser = user.name;
+        this.userDisplayName = user.name;
+        this.userEmail = user.email || this.loginUsername;
+        
+        // Extract role details
+        if (user.m_roles) {
+          this.userRoleId = user.m_roles.role_id || user.role_id || '';
+          this.userRoleName = user.m_roles.role_name || '';
+        } else {
+          this.userRoleId = user.role_id || '';
+          this.userRoleName = 'Employee'; // fallback
+        }
+
+        this.isLoggedIn = true;
+        this.loginErrorMessage = '';
+        this.closeLoginModal();
+        this.loginUsername = '';
+        this.loginPassword = '';
+      } else {
+        this.loginErrorMessage = 'Invalid credentials or user not found.';
+      }
+    }).catch((err: any) => {
+      console.error('Login error response:', err);
+      this.loginErrorMessage = 'Failed to sign in. Check credentials and try again.';
+    });
   }
 
   openApp(url: string): void {
@@ -147,6 +185,113 @@ export class PortalComponent implements OnInit {
   resetChatHistory(): void {
     this.aiChatbotService.resetChat();
     this.initializeChat();
+  }
+
+  get userFullName(): string {
+    return this.userDisplayName || this.loggedInUser || 'Emma Reynolds';
+  }
+
+  toggleProfileDropdown(event: MouseEvent): void {
+    if (this.isLoggedIn) {
+      event.stopPropagation();
+      this.isProfileDropdownOpen = !this.isProfileDropdownOpen;
+    } else {
+      this.openLoginModal();
+    }
+  }
+
+  logout(): void {
+    this.isLoggedIn = false;
+    this.loggedInUser = '';
+    this.userDisplayName = '';
+    this.userEmail = '';
+    this.userRoleId = '';
+    this.userRoleName = '';
+    this.heroService.clearCredentials();
+    this.isProfileDropdownOpen = false;
+    this.showLoginModal = true;
+  }
+
+  fetchQuickLinks(): void {
+    this.heroService.ajax(
+      'GetAllQuickLinks',
+      'http://schemas.cordys.com/AW_Database_Metadata',
+      {
+        preserveSpace: 'no',
+        qAccess: '0',
+        qValues: ''
+      }
+    ).then((resp: any) => {
+      console.log('Portal GetAllQuickLinks raw response:', resp);
+      const result = this.heroService.xmltojson(resp, 'quick_links_master');
+      console.log('Portal GetAllQuickLinks parsed JSON:', result);
+      
+      let list = [];
+      if (!result) {
+        list = [];
+      } else if (Array.isArray(result)) {
+        list = result;
+      } else {
+        list = [result];
+      }
+      
+      const colors = ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4'];
+      const bgColors = ['#e0e7ff', '#d1fae5', '#fef3c7', '#fee2e2', '#ede9fe', '#fce7f3', '#cffafe'];
+      const icons = ['inventory_2', 'people_alt', 'link', 'public', 'description', 'extension', 'language'];
+      
+      this.quickLinks = list
+        .filter((item: any) => item.status !== 'Inactive')
+        .map((item: any, idx: number) => {
+          const colorIdx = idx % colors.length;
+          return {
+            id: item.id,
+            name: item.linkdescription || 'Quick Link',
+            description: item.linkheader || '',
+            url: item.linkheader || '',
+            icon: icons[colorIdx % icons.length],
+            color: colors[colorIdx],
+            bgColor: bgColors[colorIdx]
+          };
+        });
+    }).catch((err: any) => {
+      console.error('Error fetching quick links in portal:', err);
+    });
+  }
+
+  openQuickLink(url: string): void {
+    if (!url) return;
+    let targetUrl = url.trim();
+    
+    if (targetUrl.toLowerCase().includes('ams/index.html#') || targetUrl.toLowerCase().includes('/ams/')) {
+      const slug = this.getRoleSlug(this.userRoleName);
+      console.log('AMS Link Clicked. Role:', this.userRoleName, 'Slug:', slug);
+      if (targetUrl.endsWith('#')) {
+        targetUrl = targetUrl + '/' + slug + '/dashboard';
+      } else {
+        if (!targetUrl.includes('#')) {
+          targetUrl = targetUrl + '#/' + slug + '/dashboard';
+        } else {
+          targetUrl = targetUrl + '/' + slug + '/dashboard';
+        }
+      }
+      console.log('Final target URL:', targetUrl);
+      alert('Opening AMS URL: ' + targetUrl);
+    }
+
+    if (!/^https?:\/\//i.test(targetUrl)) {
+      targetUrl = 'http://' + targetUrl;
+    }
+    window.open(targetUrl, '_blank');
+  }
+
+  getRoleSlug(roleName: string): string {
+    if (!roleName) return 'employee';
+    return roleName.toLowerCase().trim().replace(/\s+/g, '-');
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    this.isProfileDropdownOpen = false;
   }
 
   private scrollToBottom(): void {
