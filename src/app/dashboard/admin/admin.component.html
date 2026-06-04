@@ -56,7 +56,10 @@
             </div>
 
             <!-- Trigger Card -->
-            <div class="form-card" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" (click)="openQuickLinkModal()" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 35px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='none'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.08)'">
+            <div class="form-card" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;"
+                (click)="openQuickLinkModal()"
+                onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 35px rgba(0,0,0,0.1)'"
+                onmouseout="this.style.transform='none'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.08)'">
                 <div class="card-header" style="margin-bottom: 0;">
                     <div class="plus-icon">
                         <div class="plus-inner" style="background: #3b82f6;">+</div>
@@ -68,6 +71,93 @@
                 </div>
             </div>
 
+            <!-- Quick Links List Table Card -->
+            <div class="table-card" style="margin-top: 30px;">
+                <div class="table-header">
+                    <h3>Published Quick Links</h3>
+                    <button class="refresh-btn" (click)="fetchQuickLinks()">
+                        <span class="material-icons-outlined">refresh</span> Refresh
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Link Address</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th style="text-align: center;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of paginatedQuickLinksList">
+                                <td>
+                                    <div class="news-title-cell">
+                                        <span class="material-icons-outlined news-type-icon">
+                                            link
+                                        </span>
+                                        <strong>{{ item.linkheader }}</strong>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="description-cell" [title]="item.linkdescription">{{ item.linkdescription || 'N/A' }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge badge-external">
+                                        {{ item.status || 'Active' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn edit-btn" (click)="editQuickLink(item)" title="Edit">
+                                            <span class="material-icons-outlined">edit</span>
+                                        </button>
+                                        <button class="action-btn delete-btn" (click)="deleteQuickLink(item)"
+                                            title="Delete">
+                                            <span class="material-icons-outlined">delete</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr *ngIf="quickLinksList.length === 0">
+                                <td colspan="4" style="text-align: center; padding: 40px; color: #64748b;">
+                                    <span class="material-icons-outlined"
+                                        style="font-size: 48px; margin-bottom: 10px; display: block; color: #cbd5e1;">inbox</span>
+                                    No quick links found. Click "+ Add Quick Link" to publish one.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Table Pagination -->
+                <div class="table-pagination" *ngIf="quickLinksList.length > 0">
+                    <div class="pagination-info">
+                        Showing {{ (qlCurrentPage - 1) * qlPageSize + 1 }} to {{ qlShowingTo }} of {{ quickLinksList.length }}
+                        entries
+                    </div>
+
+                    <div class="pagination-controls">
+                        <button class="pagination-btn" [disabled]="qlCurrentPage === 1" (click)="qlPrevPage()">
+                            ← Prev
+                        </button>
+
+                        <div class="pagination-pages">
+                            <button *ngFor="let page of qlPageNumbers" class="page-num-btn"
+                                [class.active]="qlCurrentPage === page" (click)="qlSetPage(page)">
+                                {{ page }}
+                            </button>
+                        </div>
+
+                        <button class="pagination-btn" [disabled]="qlCurrentPage === qlTotalPages" (click)="qlNextPage()">
+                            Next →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Modal Overlay -->
             <div class="modal-overlay" [class.active]="isQuickLinkModalOpen" (click)="closeQuickLinkModal()">
                 <div class="modal-container" (click)="$event.stopPropagation()">
@@ -75,11 +165,11 @@
                     <div style="padding: 35px;">
                         <div class="card-header">
                             <div class="plus-icon">
-                                <div class="plus-inner" style="background: #3b82f6;">+</div>
+                                <div class="plus-inner" style="background: #3b82f6;">{{ editingQuickLinkId ? '✎' : '+' }}</div>
                             </div>
                             <div>
-                                <h2>Add Quick Link</h2>
-                                <p>Fill in the details below to publish a new quick link</p>
+                                <h2>{{ editingQuickLinkId ? 'Edit Quick Link' : 'Add Quick Link' }}</h2>
+                                <p>{{ editingQuickLinkId ? 'Modify the details below to update the quick link' : 'Fill in the details below to publish a new quick link' }}</p>
                             </div>
                         </div>
 
@@ -87,13 +177,13 @@
 
                         <form (ngSubmit)="saveQuickLink()">
                             <div class="form-group">
-                                <label>Link Name <span class="label-dot">•</span></label>
+                                <label>Link Address <span class="label-dot">•</span></label>
                                 <div class="admin-input-group">
                                     <div class="input-icon-container">
                                         <span class="material-icons-outlined">link</span>
                                     </div>
-                                    <input type="text" class="admin-input-field" [(ngModel)]="quickLink.name" name="qlName"
-                                        placeholder="e.g. Asset Management System" required>
+                                    <input type="text" class="admin-input-field" [(ngModel)]="quickLink.name"
+                                        name="qlName" placeholder="e.g. Asset Management System" required>
                                 </div>
                             </div>
 
@@ -103,67 +193,20 @@
                                     <div class="input-icon-container">
                                         <span class="material-icons-outlined">description</span>
                                     </div>
-                                    <textarea class="admin-input-field" [(ngModel)]="quickLink.description" name="qlDesc"
-                                        placeholder="e.g. Manage company assets" style="height: 100px;"></textarea>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="form-group">
-                                    <label>Icon (Material) <span class="label-dot">•</span></label>
-                                    <div class="admin-input-group">
-                                        <div class="input-icon-container">
-                                            <span class="material-icons-outlined">category</span>
-                                        </div>
-                                        <input type="text" class="admin-input-field" [(ngModel)]="quickLink.icon" name="qlIcon"
-                                            placeholder="e.g. inventory_2" required>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Access Level <span class="label-dot">•</span></label>
-                                    <div class="admin-input-group">
-                                        <div class="input-icon-container">
-                                            <span class="material-icons-outlined">lock</span>
-                                        </div>
-                                        <select class="admin-input-field" [(ngModel)]="quickLink.access" name="qlAccess"
-                                            required>
-                                            <option value="All">All Users</option>
-                                            <option value="Admin">Admins Only</option>
-                                            <option value="HR">HR Only</option>
-                                            <option value="IT">IT Only</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row" style="margin-top: 25px;">
-                                <div class="form-group">
-                                    <label>Icon Color</label>
-                                    <div style="display: flex; align-items: center; gap: 15px;">
-                                        <input type="color" [(ngModel)]="quickLink.color" name="qlColor"
-                                            style="width: 70px; height: 50px; padding: 4px; cursor: pointer; border-radius: 10px; border: 1px solid #dbe2ef;">
-                                        <span style="font-weight: 600; color: #1e293b;">{{ quickLink.color }}</span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Icon Background</label>
-                                    <div style="display: flex; align-items: center; gap: 15px;">
-                                        <input type="color" [(ngModel)]="quickLink.bgColor" name="qlBgColor"
-                                            style="width: 70px; height: 50px; padding: 4px; cursor: pointer; border-radius: 10px; border: 1px solid #dbe2ef;">
-                                        <span style="font-weight: 600; color: #1e293b;">{{ quickLink.bgColor }}</span>
-                                    </div>
+                                    <textarea class="admin-input-field" [(ngModel)]="quickLink.description"
+                                        name="qlDesc" placeholder="e.g. Manage company assets"
+                                        style="height: 100px;"></textarea>
                                 </div>
                             </div>
 
                             <div class="actions">
-                                <button type="button" class="cancel-btn" (click)="closeQuickLinkModal(); resetQuickLinkForm()">
+                                <button type="button" class="cancel-btn"
+                                    (click)="closeQuickLinkModal(); resetQuickLinkForm()">
                                     Cancel
                                 </button>
                                 <button type="submit" class="publish-btn"
                                     style="background: linear-gradient(135deg, #3b82f6, #2563eb); box-shadow: 0 10px 25px rgba(59,130,246,.3);">
-                                    💾 Save Quick Link
+                                    {{ editingQuickLinkId ? '💾 Update Quick Link' : '💾 Save Quick Link' }}
                                 </button>
                             </div>
                         </form>
@@ -190,7 +233,10 @@
             </div>
 
             <!-- Trigger Card -->
-            <div class="form-card news-form-card" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" (click)="openNewsModal()" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 35px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='none'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.08)'">
+            <div class="form-card news-form-card" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;"
+                (click)="openNewsModal()"
+                onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 35px rgba(0,0,0,0.1)'"
+                onmouseout="this.style.transform='none'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.08)'">
                 <div class="card-header" style="margin-bottom: 0;">
                     <div class="plus-icon">
                         <div class="plus-inner">+</div>
@@ -210,7 +256,7 @@
                         <span class="material-icons-outlined">refresh</span> Refresh
                     </button>
                 </div>
-                
+
                 <div class="table-container">
                     <table class="modern-table">
                         <thead>
@@ -227,19 +273,21 @@
                                 <td>
                                     <div class="news-title-cell">
                                         <span class="material-icons-outlined news-type-icon">
-                                            {{ item.type === 'internal' ? 'lock' : 'public' }}
+                                            {{ item.type?.toLowerCase() === 'internal' ? 'lock' : 'public' }}
                                         </span>
                                         <strong>{{ item.heading }}</strong>
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="description-cell" [title]="item.description">{{ item.description }}</div>
+                                    <div class="description-cell" [title]="item.description">{{ item.description }}
+                                    </div>
                                 </td>
                                 <td>
                                     <div class="date-cell">{{ formatDate(item.created_date) }}</div>
                                 </td>
                                 <td>
-                                    <span class="badge" [ngClass]="item.type === 'internal' ? 'badge-internal' : 'badge-external'">
+                                    <span class="badge"
+                                        [ngClass]="item.type?.toLowerCase() === 'internal' ? 'badge-internal' : 'badge-external'">
                                         {{ item.type || 'N/A' }}
                                     </span>
                                 </td>
@@ -248,7 +296,8 @@
                                         <button class="action-btn edit-btn" (click)="editNewsItem(item)" title="Edit">
                                             <span class="material-icons-outlined">edit</span>
                                         </button>
-                                        <button class="action-btn delete-btn" (click)="deleteNewsItem(item)" title="Delete">
+                                        <button class="action-btn delete-btn" (click)="deleteNewsItem(item)"
+                                            title="Delete">
                                             <span class="material-icons-outlined">delete</span>
                                         </button>
                                     </div>
@@ -256,7 +305,8 @@
                             </tr>
                             <tr *ngIf="newsList.length === 0">
                                 <td colspan="5" style="text-align: center; padding: 40px; color: #64748b;">
-                                    <span class="material-icons-outlined" style="font-size: 48px; margin-bottom: 10px; display: block; color: #cbd5e1;">inbox</span>
+                                    <span class="material-icons-outlined"
+                                        style="font-size: 48px; margin-bottom: 10px; display: block; color: #cbd5e1;">inbox</span>
                                     No announcements found. Click "+ Add News Item" to publish one.
                                 </td>
                             </tr>
@@ -267,24 +317,22 @@
                 <!-- Table Pagination -->
                 <div class="table-pagination" *ngIf="newsList.length > 0">
                     <div class="pagination-info">
-                        Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ showingTo }} of {{ newsList.length }} entries
+                        Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ showingTo }} of {{ newsList.length }}
+                        entries
                     </div>
-                    
+
                     <div class="pagination-controls">
                         <button class="pagination-btn" [disabled]="currentPage === 1" (click)="prevPage()">
                             ← Prev
                         </button>
-                        
+
                         <div class="pagination-pages">
-                            <button 
-                                *ngFor="let page of pageNumbers" 
-                                class="page-num-btn" 
-                                [class.active]="currentPage === page" 
-                                (click)="setPage(page)">
+                            <button *ngFor="let page of pageNumbers" class="page-num-btn"
+                                [class.active]="currentPage === page" (click)="setPage(page)">
                                 {{ page }}
                             </button>
                         </div>
-                        
+
                         <button class="pagination-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">
                             Next →
                         </button>
@@ -299,11 +347,13 @@
                     <div style="padding: 35px;">
                         <div class="card-header">
                             <div class="plus-icon">
-                                <div class="plus-inner" style="background: #3b82f6;">{{ editingNewsId ? '✎' : '+' }}</div>
+                                <div class="plus-inner" style="background: #3b82f6;">{{ editingNewsId ? '✎' : '+' }}
+                                </div>
                             </div>
                             <div>
                                 <h2>{{ editingNewsId ? 'Edit News Item' : 'Add News Item' }}</h2>
-                                <p>{{ editingNewsId ? 'Modify the details below to update the announcement' : 'Fill in the details below to publish a new announcement' }}</p>
+                                <p>{{ editingNewsId ? 'Modify the details below to update the announcement' : 'Fill in
+                                    the details below to publish a new announcement' }}</p>
                             </div>
                         </div>
 
@@ -316,8 +366,8 @@
                                     <div class="input-icon-container">
                                         <span class="material-icons-outlined">assignment</span>
                                     </div>
-                                    <input type="text" class="admin-input-field" [(ngModel)]="newsItem.title" name="newsTitle"
-                                        placeholder="e.g. Annual Day Celebration" required>
+                                    <input type="text" class="admin-input-field" [(ngModel)]="newsItem.title"
+                                        name="newsTitle" placeholder="e.g. Annual Day Celebration" required>
                                 </div>
                             </div>
 
@@ -327,8 +377,9 @@
                                     <div class="input-icon-container">
                                         <span class="material-icons-outlined">description</span>
                                     </div>
-                                    <textarea class="admin-input-field" [(ngModel)]="newsItem.description" name="newsDesc"
-                                        placeholder="e.g. Join us for the celebration..." required></textarea>
+                                    <textarea class="admin-input-field" [(ngModel)]="newsItem.description"
+                                        name="newsDesc" placeholder="e.g. Join us for the celebration..."
+                                        required></textarea>
                                 </div>
                             </div>
 
@@ -339,8 +390,8 @@
                                         <div class="input-icon-container">
                                             <span class="material-icons-outlined">calendar_today</span>
                                         </div>
-                                        <input type="date" class="admin-input-field" [(ngModel)]="newsItem.date" name="newsDate"
-                                            required>
+                                        <input type="date" class="admin-input-field" [(ngModel)]="newsItem.date"
+                                            name="newsDate" required>
                                     </div>
                                 </div>
 
@@ -350,10 +401,11 @@
                                         <div class="input-icon-container">
                                             <span class="material-icons-outlined">public</span>
                                         </div>
-                                        <select class="admin-input-field" [(ngModel)]="newsItem.type" name="newsType" required>
+                                        <select class="admin-input-field" [(ngModel)]="newsItem.type" name="newsType"
+                                            required>
                                             <option value="" disabled selected>Select</option>
-                                            <option value="internal">Internal</option>
-                                            <option value="external">External</option>
+                                            <option value="Internal">Internal</option>
+                                            <option value="External">External</option>
                                         </select>
                                     </div>
                                 </div>

@@ -9,6 +9,19 @@ export class HeroService {
 
   constructor() { }
 
+  private ssoUsername = 'Ishan.jain';
+  private ssoPassword = 'training@2025';
+
+  setCredentials(username: string, password: string) {
+    this.ssoUsername = username;
+    this.ssoPassword = password;
+  }
+
+  clearCredentials() {
+    this.ssoUsername = 'Ishan.jain';
+    this.ssoPassword = 'training@2025';
+  }
+
   /**
    * Converts XML/SOAP response data into a JSON object using the Cordys utility.
    * @param resp The XML/SOAP response object from a Cordys AJAX call.
@@ -65,7 +78,7 @@ export class HeroService {
       };
 
       if ($.cordys?.authentication?.sso) {
-        $.cordys.authentication.sso.authenticate('Ishan.jain', 'training@2025')
+        $.cordys.authentication.sso.authenticate(this.ssoUsername, this.ssoPassword)
           .done(() => {
             executeAjax();
           })
