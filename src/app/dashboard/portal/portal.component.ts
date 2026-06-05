@@ -32,6 +32,8 @@ export class PortalComponent implements OnInit {
 
   holidays: any[] = []; // Intentionally left empty to handle the "if not any then handle it in proper way" condition
   quickLinks: any[] = [];
+  newsList: any[] = [];
+  userTypeStr: string = '';
 
   // Chatbot State
   isChatOpen: boolean = false;
@@ -51,6 +53,7 @@ export class PortalComponent implements OnInit {
     }, 300);
     this.initializeChat();
     this.fetchQuickLinks();
+    this.fetchNewsAnnouncements();
   }
 
   initializeChat(): void {
@@ -109,10 +112,12 @@ export class PortalComponent implements OnInit {
         }
 
         this.isLoggedIn = true;
+        this.userTypeStr = user.type || (this.userEmail.toLowerCase().includes('external') ? 'External' : 'Internal');
         this.loginErrorMessage = '';
         this.closeLoginModal();
         this.loginUsername = '';
         this.loginPassword = '';
+        this.fetchNewsAnnouncements();
       } else {
         this.loginErrorMessage = 'Invalid credentials or user not found.';
       }
@@ -207,9 +212,11 @@ export class PortalComponent implements OnInit {
     this.userEmail = '';
     this.userRoleId = '';
     this.userRoleName = '';
+    this.userTypeStr = '';
     this.heroService.clearCredentials();
     this.isProfileDropdownOpen = false;
     this.showLoginModal = true;
+    this.fetchNewsAnnouncements();
   }
 
   fetchQuickLinks(): void {
@@ -301,6 +308,57 @@ export class PortalComponent implements OnInit {
         container.scrollTop = container.scrollHeight;
       }
     }, 50);
+  }
+
+  fetchNewsAnnouncements(): void {
+    const typeValue = this.isLoggedIn ? (this.userTypeStr || 'Internal') : 'External';
+    this.heroService.ajax(
+      'GetAllNewsAnnouncementsfortype',
+      'http://schemas.cordys.com/AW_Database_Metadata',
+      {
+        preserveSpace: 'no',
+        qAccess: '0',
+        qValues: '',
+        Type: typeValue
+      }
+    ).then((resp: any) => {
+      const result = this.heroService.xmltojson(resp, 'news_announcements');
+      if (!result) {
+        this.newsList = [];
+      } else if (Array.isArray(result)) {
+        this.newsList = result;
+      } else {
+        this.newsList = [result];
+      }
+      console.log('Fetched news announcements for type', typeValue, this.newsList);
+    }).catch((err: any) => {
+      console.error('Error fetching news announcements:', err);
+    });
+  }
+
+  getTimeAgo(dateStr: string): string {
+    if (!dateStr) return '';
+    try {
+      const date = new Date(dateStr);
+      const now = new Date();
+      const diffMs = now.getTime() - date.getTime();
+      const diffMins = Math.floor(diffMs / (1000 * 60));
+      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+      if (diffMins < 1) return 'Just now';
+      if (diffMins < 60) return `${diffMins}m ago`;
+      if (diffHours < 24) return `${diffHours}h ago`;
+      if (diffDays < 7) return `${diffDays}d ago`;
+      
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    } catch (e) {
+      return dateStr;
+    }
   }
 }
 
