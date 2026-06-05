@@ -126,27 +126,25 @@
             <a href="#" class="view-all-link">View All</a>
           </div>
           <div class="card-body">
-            <div class="news-item flex gap-16 mb-16">
-              <div class="news-img-placeholder" style="background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);">
-                <span class="material-icons-outlined" style="color: #94a3b8;">newspaper</span>
+            <ng-container *ngIf="newsList && newsList.length > 0; else noNews">
+              <div *ngFor="let item of newsList; let i = index" class="news-item flex gap-16" [class.mb-16]="i < newsList.length - 1">
+                <div class="news-img-placeholder" style="background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);">
+                  <span class="material-icons-outlined" style="color: #94a3b8;">{{ i % 2 === 0 ? 'newspaper' : 'article' }}</span>
+                </div>
+                <div class="news-content">
+                  <h4 class="text-ellipsis" [title]="item.heading">{{ item.heading }}</h4>
+                  <p class="text-ellipsis-2" [title]="item.description">{{ item.description }}</p>
+                  <span class="news-time">{{ getTimeAgo(item.created_date) }}</span>
+                </div>
               </div>
-              <div class="news-content">
-                <h4 class="text-ellipsis">Annual Day Celebration</h4>
-                <p class="text-ellipsis-2">Join us for the Annual Day celebration on Dec 15, 2024.</p>
-                <span class="news-time">2h ago</span>
+            </ng-container>
+            <ng-template #noNews>
+              <div style="text-align: center; padding: 24px; color: #64748b;">
+                <span class="material-icons-outlined" style="font-size: 36px; margin-bottom: 8px; display: block; color: #cbd5e1;">inbox</span>
+                No news or announcements found.
               </div>
-            </div>
-            <div class="news-item flex gap-16">
-              <div class="news-img-placeholder" style="background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);">
-                <span class="material-icons-outlined" style="color: #94a3b8;">article</span>
-              </div>
-              <div class="news-content">
-                <h4 class="text-ellipsis">Work From Home Guidelines</h4>
-                <p class="text-ellipsis-2">New WFH policy is now effective from Nov 1, 2024.</p>
-                <span class="news-time">1d ago</span>
-              </div>
-            </div>
-            <button class="btn-view-all w-100 mt-16">View All News</button>
+            </ng-template>
+            <button class="btn-view-all w-100 mt-16" *ngIf="newsList && newsList.length > 0">View All News</button>
           </div>
         </div>
 

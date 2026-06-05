@@ -10,12 +10,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <!-- development -->
-  <script src="./assets/js/jquery-3.6.1.min.js"></script>
+  <!-- <script src="./assets/js/jquery-3.6.1.min.js"></script> -->
   <script src="./assets/js/cordys.html5sdk.js"></script>
+
+  <!-- deployment -->
+  <script src="./assets/js/cordys/cordys.html5sdk.js"></script>
   <script>
     if (window.jQuery && window.jQuery.cordys) {
       window.jQuery.cordys.preferences = window.jQuery.cordys.preferences || {};
-      window.jQuery.cordys.preferences.getUserPreferences = function() {
+      window.jQuery.cordys.preferences.getUserPreferences = function () {
         var deferred = window.jQuery.Deferred();
         deferred.resolve({
           language: 'en-US',
