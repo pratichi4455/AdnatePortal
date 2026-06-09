@@ -769,6 +769,7 @@
   top: 50%;
   transform: translateY(-50%);
   color: #94a3b8;
+  pointer-events: none;
 }
 
 .input-with-icon input {

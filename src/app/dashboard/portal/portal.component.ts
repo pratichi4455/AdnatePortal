@@ -44,7 +44,7 @@ export class PortalComponent implements OnInit {
   constructor(
     private aiChatbotService: AiChatbotService,
     private heroService: HeroService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Show login modal on fresh load
@@ -101,7 +101,7 @@ export class PortalComponent implements OnInit {
         this.loggedInUser = user.name;
         this.userDisplayName = user.name;
         this.userEmail = user.email || this.loginUsername;
-        
+
         // Extract role details
         if (user.m_roles) {
           this.userRoleId = user.m_roles.role_id || user.role_id || '';
@@ -168,7 +168,7 @@ export class PortalComponent implements OnInit {
     try {
       // 3. Request Gemini AI Response
       const aiResponseText = await this.aiChatbotService.sendMessage(messageText);
-      
+
       // 4. Add AI Message to Chat History
       this.chatMessages.push({
         sender: 'ai',
@@ -232,7 +232,7 @@ export class PortalComponent implements OnInit {
       console.log('Portal GetAllQuickLinks raw response:', resp);
       const result = this.heroService.xmltojson(resp, 'quick_links_master');
       console.log('Portal GetAllQuickLinks parsed JSON:', result);
-      
+
       let list = [];
       if (!result) {
         list = [];
@@ -241,11 +241,11 @@ export class PortalComponent implements OnInit {
       } else {
         list = [result];
       }
-      
+
       const colors = ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4'];
       const bgColors = ['#e0e7ff', '#d1fae5', '#fef3c7', '#fee2e2', '#ede9fe', '#fce7f3', '#cffafe'];
       const icons = ['inventory_2', 'people_alt', 'link', 'public', 'description', 'extension', 'language'];
-      
+
       this.quickLinks = list
         .filter((item: any) => item.status !== 'Inactive')
         .map((item: any, idx: number) => {
@@ -268,19 +268,25 @@ export class PortalComponent implements OnInit {
   openQuickLink(url: string): void {
     if (!url) return;
     let targetUrl = url.trim();
-    
-    if (targetUrl.toLowerCase().includes('ams/index.html#') || targetUrl.toLowerCase().includes('/ams/')) {
-      const slug = this.getRoleSlug(this.userRoleName);
-      console.log('AMS Link Clicked. Role:', this.userRoleName, 'Slug:', slug);
-      if (targetUrl.endsWith('#')) {
-        targetUrl = targetUrl + '/' + slug + '/dashboard';
+
+    if (targetUrl.toLowerCase().includes('ams/index.html') || targetUrl.toLowerCase().includes('/ams/') || targetUrl.toLowerCase().includes('ams')) {
+      const role = (this.userRoleName || '').trim().toLowerCase();
+      console.log('AMS Link Clicked. Role:', this.userRoleName);
+
+      if (role === 'admin') {
+        targetUrl = 'http://43.242.214.239:81/home/training2025/AMS/index.html#/admin/dashboard';
+      } else if (role === 'asset manager') {
+        targetUrl = 'http://43.242.214.239:81/home/training2025/AMS/index.html#/asset-manager/dashboard';
+      } else if (role === 'employee') {
+        targetUrl = 'http://43.242.214.239:81/home/training2025/AMS/index.html#/employee/my-assets';
+      } else if (role === 'team lead') {
+        targetUrl = 'http://43.242.214.239:81/home/training2025/AMS/index.html#/team-lead/dashboard';
+      } else if (role === 'asset allocation team') {
+        targetUrl = 'http://43.242.214.239:81/home/training2025/AMS/index.html#/admin/dashboard';
       } else {
-        if (!targetUrl.includes('#')) {
-          targetUrl = targetUrl + '#/' + slug + '/dashboard';
-        } else {
-          targetUrl = targetUrl + '/' + slug + '/dashboard';
-        }
+        targetUrl = 'http://43.242.214.239:81/home/training2025/AMS/index.html#/employee/my-assets';
       }
+
       console.log('Final target URL:', targetUrl);
       alert('Opening AMS URL: ' + targetUrl);
     }
@@ -350,7 +356,7 @@ export class PortalComponent implements OnInit {
       if (diffMins < 60) return `${diffMins}m ago`;
       if (diffHours < 24) return `${diffHours}h ago`;
       if (diffDays < 7) return `${diffDays}d ago`;
-      
+
       return date.toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
