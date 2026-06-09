@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 
 declare var $: any;
-$.cordys.baseURL = '/home/training2025';
+if (typeof $ !== 'undefined' && $.cordys) {
+  $.cordys.baseURL = '/home/training2025';
+}
 @Injectable({
   providedIn: 'root',
 })

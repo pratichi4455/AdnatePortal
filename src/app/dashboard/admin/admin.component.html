@@ -101,7 +101,8 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="description-cell" [title]="item.linkdescription">{{ item.linkdescription || 'N/A' }}
+                                    <div class="description-cell" [title]="item.linkdescription">{{ item.linkdescription
+                                        || 'N/A' }}
                                     </div>
                                 </td>
                                 <td>
@@ -133,9 +134,15 @@
                 </div>
 
                 <!-- Table Pagination -->
-                <div class="table-pagination" *ngIf="quickLinksList.length > 0">
+                <!-- <div class="table-pagination" *ngIf="quickLinksList.length > 0">
                     <div class="pagination-info">
                         Showing {{ (qlCurrentPage - 1) * qlPageSize + 1 }} to {{ qlShowingTo }} of {{ quickLinksList.length }}
+                        entries
+                    </div> -->
+                <div class="table-pagination" *ngIf="quickLinksList.length > 0">
+                    <div class="pagination-info">
+                        Showing {{ (qlCurrentPage - 1) * qlPageSize + 1 }} to {{ qlShowingTo }} of {{
+                        quickLinksList.length }}
                         entries
                     </div>
 
@@ -151,7 +158,8 @@
                             </button>
                         </div>
 
-                        <button class="pagination-btn" [disabled]="qlCurrentPage === qlTotalPages" (click)="qlNextPage()">
+                        <button class="pagination-btn" [disabled]="qlCurrentPage === qlTotalPages"
+                            (click)="qlNextPage()">
                             Next →
                         </button>
                     </div>
@@ -165,11 +173,13 @@
                     <div style="padding: 35px;">
                         <div class="card-header">
                             <div class="plus-icon">
-                                <div class="plus-inner" style="background: #3b82f6;">{{ editingQuickLinkId ? '✎' : '+' }}</div>
+                                <div class="plus-inner" style="background: #3b82f6;">{{ editingQuickLinkId ? '✎' : '+'
+                                    }}</div>
                             </div>
                             <div>
                                 <h2>{{ editingQuickLinkId ? 'Edit Quick Link' : 'Add Quick Link' }}</h2>
-                                <p>{{ editingQuickLinkId ? 'Modify the details below to update the quick link' : 'Fill in the details below to publish a new quick link' }}</p>
+                                <p>{{ editingQuickLinkId ? 'Modify the details below to update the quick link' : 'Fill
+                                    in the details below to publish a new quick link' }}</p>
                             </div>
                         </div>
 
